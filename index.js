@@ -27,6 +27,6 @@ app.get('/', (req, res) => {
 routerApi(app);
 
 
-app.listen(port, () => {
-  console.log(`Mi port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Mi port ${process.env.PORT}`);
 })
