@@ -1,0 +1,88 @@
+
+const boom = require('@hapi/boom');
+const bcrypt = require('bcrypt');
+const UserService = require('./usersService');
+const service = new UserService;
+const jwt = require('jsonwebtoken');
+const { config } = require('./../config/config');
+const nodemailer = require('nodemailer');
+
+class AuthService {
+
+    async getUser(email, password) {
+        const user = await service.findByEmail(email);
+        if (!user) {
+            throw boom.unauthorized();
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            throw boom.unauthorized();
+        }
+        delete user.password;
+        return user;
+    }
+
+    signToken(user) {
+        const payload = {
+            sub: user.id,
+            role: user.role
+        }
+        const token = jwt.sign(payload, config.jwtSecret);
+        return {
+            user,
+            token
+        };
+    }
+
+    async sendRecoveryLink(email) {
+        const user = await service.findByEmail(email);
+        if (!user) {
+            done(boom.unauthorized(), false);
+        }
+        const payload = { sub: user.id };
+        const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15min' });
+        const link = `http://myfrontend.com/recovery?token=${token}`
+        service.update(user.id, { recovery_token: token });
+        const mail = {
+            from: config.email, // sender address
+            to: `${user.email}`, // list of receivers
+            subject: "Email para recuperar contrasena", // Subject line
+            html: `<b>Ingresa a este link => ${link}</b>`, // html body
+        };
+        const rta = await this.sendEmail(mail);
+        return rta;
+    }
+
+    async changePassword(token, newPassword) {
+        try {
+            const payload = jwt.verify(token, config.jwtSecret);
+            const user = await service.findOne(payload.sub);
+            if (user.recovery_token !== token) {
+                throw boom.unauthorized();
+            }
+            const hash = await bcrypt.hash(newPassword,10);  
+            await service.update(user.id, { recovery_token: null, password: hash });
+            return { message: 'password changed' }
+        } catch (error) {
+            throw boom.unauthorized();
+        }
+    }
+
+    async sendEmail(infoMail) {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // true for port 465, false for other ports
+            auth: {
+                user: config.email,
+                pass: config.passEmail,
+            },
+        });
+
+        await transporter.sendMail(infoMail);
+
+        return { message: 'mail sent' };
+    }
+}
+
+module.exports = AuthService;

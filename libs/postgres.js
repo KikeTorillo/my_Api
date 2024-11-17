@@ -1,3 +1,5 @@
+// Esta es una forma de conexion sin hacer pool de conexiones no se usa actualmente en el proyecto
+// solo esta como ejemplo
 const { Client } = require('pg');
 
 async function getConnection(){
