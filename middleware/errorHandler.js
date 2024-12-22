@@ -13,6 +13,7 @@ function logErrors(err, req, res, next) {
 
 //Este middleware retorna el status code del error
 function boomErrorHandler(err, req, res, next) {
+    console.log(err.output);
     if (err.isBoom) {
         const { output } = err;
         res.status(output.statusCode).json(output.payload);

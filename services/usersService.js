@@ -36,7 +36,7 @@ class UsersService {
   async create(body) {
     const user = await this.pool.query(`select * from users where email='${body.email}';`);
     if (user.rows.length !== 0) {
-      throw new Error('El usuario ya existe');
+      throw boom.conflict('Usuario repetido');
     }
     const hash = await bcrypt.hash(body.password, 10);
     const query = `insert into users (email,password,role) values ('${body.email}','${hash}','${body.role}');`;

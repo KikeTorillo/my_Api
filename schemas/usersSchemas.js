@@ -35,5 +35,10 @@ const changePasswordSchema = Joi.object({
     newPassword: password.required(),
     token: token.required(),
 });
+
+const registrationSchema = Joi.object({
+    email: email.required(),
+    password: password.required(),
+});
 //se exporta el schema para poder utilizarse
-module.exports  = {createUserSchema, updateUserSchema, getUserSchema, loginSchema, changePasswordSchema}
+module.exports  = {createUserSchema, updateUserSchema, getUserSchema, loginSchema, changePasswordSchema, registrationSchema}

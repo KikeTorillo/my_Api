@@ -9,6 +9,19 @@ const nodemailer = require('nodemailer');
 
 class AuthService {
 
+    // funcion para crear el token y retornarlo
+    signToken(user) {
+        const payload = {
+            sub: user.id,
+            role: user.role
+        }
+        const token = jwt.sign(payload, config.jwtSecret);
+        return {
+            user,
+            token
+        };
+    }
+
     async getUser(email, password) {
         const user = await service.findByEmail(email);
         if (!user) {
@@ -20,18 +33,6 @@ class AuthService {
         }
         delete user.password;
         return user;
-    }
-
-    signToken(user) {
-        const payload = {
-            sub: user.id,
-            role: user.role
-        }
-        const token = jwt.sign(payload, config.jwtSecret);
-        return {
-            user,
-            token
-        };
     }
 
     async sendRecoveryLink(email) {
@@ -54,18 +55,14 @@ class AuthService {
     }
 
     async changePassword(token, newPassword) {
-        try {
-            const payload = jwt.verify(token, config.jwtSecret);
-            const user = await service.findOne(payload.sub);
-            if (user.recovery_token !== token) {
-                throw boom.unauthorized();
-            }
-            const hash = await bcrypt.hash(newPassword,10);  
-            await service.update(user.id, { recovery_token: null, password: hash });
-            return { message: 'password changed' }
-        } catch (error) {
+        const payload = jwt.verify(token, config.jwtSecret);
+        const user = await service.findOne(payload.sub);
+        if (user.recovery_token !== token) {
             throw boom.unauthorized();
         }
+        const hash = await bcrypt.hash(newPassword, 10);
+        await service.update(user.id, { recovery_token: null, password: hash });
+        return { message: 'password changed' }
     }
 
     async sendEmail(infoMail) {
@@ -83,6 +80,13 @@ class AuthService {
 
         return { message: 'mail sent' };
     }
+
+    async regiterUser(body) {
+        const user = await service.create(body);
+        return { message: 'user created' }
+    }
+
+
 }
 
 module.exports = AuthService;

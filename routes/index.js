@@ -2,6 +2,7 @@
 const productsRouter = require('./productsRouter');
 const usersRouter = require('./usersRouter');
 const authRouter = require('./authRouter');
+const todosRouter = require('./todosRouter');
 //se requiere express para realizar el ruteo
 const express = require('express');
 
@@ -15,6 +16,7 @@ function routerApi(app){
   // Se especifican las rutas a utilizar
   router.use('/auth', authRouter);
   router.use('/users', usersRouter);
+  router.use('/todos', todosRouter);
   router.use('/products', productsRouter);
 }
 
