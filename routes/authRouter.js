@@ -15,10 +15,10 @@ router.post('/login',
   
   validatorHandler(loginSchema, 'body'),
   async (req, res, next) => {
-    res.header('Acces-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Methods', 'POST, PUT, PATCH, GET, DELETE, OPTIONS')
-    res.header('Access-Control-Allow-Headers', '*')
-    
+    // res.header('Acces-Control-Allow-Origin', '*')
+    // res.header('Access-Control-Allow-Methods', 'POST, PUT, PATCH, GET, DELETE, OPTIONS')
+    // res.header('Access-Control-Allow-Headers', '*')
+
     try {
       const user = req.user;
       res.json(service.signToken(user));
@@ -30,7 +30,6 @@ router.post('/login',
 
 router.post('/recovery',
   async (req, res, next) => {
-    res.header('Acces-Control-Allow-Origin', '*')
     try {
       const { email } = req.body;
       const rta = await service.sendRecoveryLink(email);
@@ -44,7 +43,6 @@ router.post('/recovery',
 router.post('/change-password',
   validatorHandler(changePasswordSchema, 'body'),
   async (req, res, next) => {
-    res.header('Acces-Control-Allow-Origin', '*')
     try {
       const { token, newPassword } = req.body;
       const rta = await service.changePassword(token, newPassword);
@@ -58,7 +56,6 @@ router.post('/change-password',
 router.post('/registration',
   validatorHandler(registrationSchema, 'body'),
   async (req, res, next) => {
-    res.header('Acces-Control-Allow-Origin', '*')
     try {
       const body = req.body;
       body.role = 'user'
