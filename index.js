@@ -11,7 +11,14 @@ app.use(express.json());
 
 //------------------------------------------------------------------------------------------------------------
 //esto es para que se puedan realizar peticiones de diferentes direcciones lo ideal seria crear una white list
-app.use(cors());
+app.use(cors(
+  {
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }
+));
 //const whiteList = ['http://localhost:8080'];
 /*const options = {
   origin: (origin, callback)=>{
