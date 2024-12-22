@@ -70,7 +70,7 @@ router.patch('/',
 
 router.delete('/',
     authenticateJwt,
-    checkRoles(['admin']),
+    checkRoles(['admin','user']),
     validatorHandler(deleteTodoSchema, 'body'),
     async (req, res, next) => {
       try {
