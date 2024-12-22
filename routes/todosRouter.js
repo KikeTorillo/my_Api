@@ -17,7 +17,7 @@ router.get('/:idUser',
     checkRoles(['admin', 'user']),
     validatorHandler(getTodoSchema, 'params'),
     async (req, res, next) => {
-      req.header('Acces-Control-Allow-Origin', '*')
+      res.header('Acces-Control-Allow-Origin', '*')
         //se tienen que aplicar los try catch en cada tipo de peticion para que el middleware lo pueda detectar
         try {
             const { idUser } = req.params;
@@ -37,7 +37,7 @@ router.post('/',
     //el validatorHandler es el middleware que valida el eschema vs el body
     validatorHandler(createTodoSchema, 'body'),
     async (req, res, next) => {
-      req.header('Acces-Control-Allow-Origin', '*')
+      res.header('Acces-Control-Allow-Origin', '*')
         try {
             const body = req.body;
             const todos = await serviceTodos.create(body);
@@ -57,7 +57,7 @@ router.patch('/',
     //el validatorHandler es el middleware que valida el eschema vs el body
     validatorHandler(updateTodoSchema, 'body'),
     async (req, res, next) => {
-      req.header('Acces-Control-Allow-Origin', '*')
+      res.header('Acces-Control-Allow-Origin', '*')
       try {
         const body = req.body;
        const todos = await serviceTodos.update(body);
@@ -76,7 +76,7 @@ router.delete('/',
     checkRoles(['admin']),
     validatorHandler(deleteTodoSchema, 'body'),
     async (req, res, next) => {
-      req.header('Acces-Control-Allow-Origin', '*')
+      res.header('Acces-Control-Allow-Origin', '*')
       try {
         const body = req.body;
         const deteTodos = await serviceTodos.delete(body);
