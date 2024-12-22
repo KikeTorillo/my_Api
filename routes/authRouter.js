@@ -12,9 +12,13 @@ router.post('/login',
   // se coloca el manejo de sesiones de passport en false
   // esto por que las sesiones se getionan con JWT
   passport.authenticate('local', { session: false }),
+  
   validatorHandler(loginSchema, 'body'),
   async (req, res, next) => {
     res.header('Acces-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Methods', 'POST, PUT, PATCH, GET, DELETE, OPTIONS')
+    res.header('Access-Control-Allow-Headers', '*')
+    
     try {
       const user = req.user;
       res.json(service.signToken(user));
