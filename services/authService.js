@@ -15,11 +15,12 @@ class AuthService {
             sub: user.id,
             role: user.role
         }
-        const token = jwt.sign(payload, config.jwtSecret);
-        return {
-            user,
-            token
-        };
+        const token = jwt.sign(
+            payload, 
+            config.jwtSecret//,
+            //{expiresIn: '1h'}
+        );
+        return {payload,token};
     }
 
     async getUser(email, password) {

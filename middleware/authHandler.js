@@ -13,11 +13,12 @@ function checkApiKey(req, res, next) {
 }
 
 function authenticateJwt(req, res, next) {
-    const token = req.headers.authorization;
+    const token = req.cookies.access_token;
+    
     if (!token) {
-        throw boom.unauthorized();
+        throw boom.unauthorized('session expired');
     }
-    jwt.verify(token.slice(7), config.jwtSecret, function (err, user) {
+    jwt.verify(token, config.jwtSecret, function (err, user) {
         if (err) {
             throw boom.unauthorized();
         }

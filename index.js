@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const app = express();
 const routerApi = require('./routes');
 const port = 3000;
@@ -9,28 +10,24 @@ const {logErrors, errorHandler,boomErrorHandler} = require('./middleware/errorHa
 //eso es para poder recibir info tipo json es el middleware de express
 app.use(express.json());
 
+app.use(cookieParser());
+
 //------------------------------------------------------------------------------------------------------------
 //esto es para que se puedan realizar peticiones de diferentes direcciones lo ideal seria crear una white list
-// app.use(cors(
-//   {
-//     "origin": "*",
-//     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-//     "preflightContinue": false,
-//     "optionsSuccessStatus": 204
-//   }
-// ));
-app.use(cors());
-//const whiteList = ['http://localhost:8080'];
-/*const options = {
+const whiteList = ['http://localhost:5173','http://localhost:3000'];
+const options = {
   origin: (origin, callback)=>{
     if (whiteList.includes(origin)) {
       callback(null,true);
     }else{
-      callback(new Error(''));
+      callback(new Error('muesto error de cors'));
     }
-  }
+  },
+  credentials: true
 };
-app.use(cors(options));*/
+
+app.use(cors(options));
+
 //------------------------------------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------------------------------------

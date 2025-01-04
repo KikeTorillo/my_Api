@@ -51,7 +51,6 @@ class UsersService {
 
   async delete(id){
     const user = await this.findOne(id);
-    console.log(user);
     if (user) {
       const query = `delete from users where id=${id}`;
       const rta = await this.pool.query(query);

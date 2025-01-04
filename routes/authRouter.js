@@ -15,13 +15,16 @@ router.post('/login',
   
   validatorHandler(loginSchema, 'body'),
   async (req, res, next) => {
-    // res.header('Acces-Control-Allow-Origin', '*')
-    // res.header('Access-Control-Allow-Methods', 'POST, PUT, PATCH, GET, DELETE, OPTIONS')
-    // res.header('Access-Control-Allow-Headers', '*')
-
     try {
-      const user = req.user;
-      res.json(service.signToken(user));
+      const userReq = req.user;
+      const token = service.signToken(userReq);
+      res
+      .cookie('access_token', token.token, { 
+        httpOnly: true, // la cookie solo se puede acceder en el servidor
+        secure: false, // solo se envia por https importante poner true en produccion
+        sameSite: 'lax', // solo se envia si es el mismo dominio
+      })
+      .json(token.payload);
     } catch (error) {
       next(error);
     }
