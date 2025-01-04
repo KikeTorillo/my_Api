@@ -21,7 +21,7 @@ router.post('/login',
       res
       .cookie('access_token', token.token, { 
         httpOnly: true, // la cookie solo se puede acceder en el servidor
-        secure: false, // solo se envia por https importante poner true en produccion
+        secure: true, // solo se envia por https importante poner true en produccion
         sameSite: 'lax', // solo se envia si es el mismo dominio
       })
       .json(token.payload);
