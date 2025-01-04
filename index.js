@@ -14,10 +14,11 @@ app.use(cookieParser());
 
 //------------------------------------------------------------------------------------------------------------
 //esto es para que se puedan realizar peticiones de diferentes direcciones lo ideal seria crear una white list
-const whiteList = ['http://localhost:5173','http://localhost:3000','https://suite-apps-front-orpin.vercel.app/todo-app','https://my-api-eta-orcin.vercel.app'];
+const whiteList = ['http://localhost:5173','http://localhost:3000','https://suite-apps-front-orpin.vercel.app','https://my-api-eta-orcin.vercel.app'];
 const options = {
   origin: (origin, callback)=>{
     if (whiteList.includes(origin)) {
+      console.log(origin);
       callback(null,true);
     }else{
       callback(new Error('muesto error de cors'));
