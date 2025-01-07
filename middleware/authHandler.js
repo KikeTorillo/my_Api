@@ -14,7 +14,6 @@ function checkApiKey(req, res, next) {
 
 function authenticateJwt(req, res, next) {
     const token = req.cookies.access_token;
-    console.log(token);
     if (!token) {
         throw boom.unauthorized('session expired');
     }

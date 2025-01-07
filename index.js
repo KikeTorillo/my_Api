@@ -18,7 +18,6 @@ const whiteList = ['http://localhost:5173','http://localhost:3000','https://suit
 const options = {
   origin: (origin, callback)=>{
     if (whiteList.includes(origin)) {
-      console.log(origin);
       callback(null,true);
     }else{
       callback(new Error('muesto error de cors'));

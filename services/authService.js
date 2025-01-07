@@ -43,13 +43,14 @@ class AuthService {
         }
         const payload = { sub: user.id };
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15min' });
-        const link = `http://myfrontend.com/recovery?token=${token}`
+        console.log(token);
+        const link = `${config.urlFront}?token=${token}`
         service.update(user.id, { recovery_token: token });
         const mail = {
             from: config.email, // sender address
             to: `${user.email}`, // list of receivers
             subject: "Email para recuperar contrasena", // Subject line
-            html: `<b>Ingresa a este link => ${link}</b>`, // html body
+            html: `<b>Ingresa a este link =></b> <a href="${link}">Recuperar pass</a>`, // html body
         };
         const rta = await this.sendEmail(mail);
         return rta;
@@ -58,7 +59,11 @@ class AuthService {
     async changePassword(token, newPassword) {
         const payload = jwt.verify(token, config.jwtSecret);
         const user = await service.findOne(payload.sub);
+        console.log('entro',user);
+            console.log('token', token);
         if (user.recovery_token !== token) {
+            console.log('entro',user);
+            console.log('token', token);
             throw boom.unauthorized();
         }
         const hash = await bcrypt.hash(newPassword, 10);

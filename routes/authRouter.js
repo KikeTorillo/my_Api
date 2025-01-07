@@ -8,6 +8,8 @@ const { validatorHandler } = require('./../middleware/validatorHandler');
 const { loginSchema, changePasswordSchema, registrationSchema } = require('./../schemas/usersSchemas');
 const router = express.Router();
 
+const { config } = require('./../config/config');
+
 router.post('/login',
   // se coloca el manejo de sesiones de passport en false
   // esto por que las sesiones se getionan con JWT
@@ -21,7 +23,7 @@ router.post('/login',
       res
       .cookie('access_token', token.token, { 
         httpOnly: true, // la cookie solo se puede acceder en el servidor
-        secure: true, // solo se envia por https importante poner true en produccion
+        secure: config.isProd ? true : false, // solo se envia por https importante poner true en produccion
         sameSite: 'None', // solo se envia si es el mismo dominio
       })
       .json(token.payload);

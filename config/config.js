@@ -13,7 +13,9 @@ const config = {
     apiKey: process.env.API_KEY,
     jwtSecret: process.env.JWT_SECRET,
     email: process.env.EMAIL,
-    passEmail: process.env.PASSEMAIL
+    passEmail: process.env.PASSEMAIL,
+    urlFront: process.env.NODE_ENV === 'produccion' ? process.env.FRONT_URL_PROD : process.env.FRONT_URL_LOCAL
+
 }
 
 module.exports = {config};
