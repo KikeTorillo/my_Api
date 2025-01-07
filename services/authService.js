@@ -44,7 +44,7 @@ class AuthService {
         const payload = { sub: user.id };
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15min' });
         console.log(token);
-        const link = `${config.urlFront}?token=${token}`
+        const link = `${config.urlFront}/resetpass?token=${token}`
         service.update(user.id, { recovery_token: token });
         const mail = {
             from: config.email, // sender address
