@@ -4,11 +4,11 @@ const router = express.Router();
 const TodosService = require('../services/todosService');
 const serviceTodos = new TodosService();
 const { validatorHandler } = require('./../middleware/validatorHandler');
-const { getTodoSchema, createTodoSchema, updateTodoSchema, deleteTodoSchema } = require('./../schemas/toDosSchemas');
+const { getTodoSchema, createTodoSchema, deleteTodoSchema } = require('./../schemas/toDosSchemas');
 const { authenticateJwt, checkRoles } = require('./../middleware/authHandler');
 
 
-router.get('/:idUser',
+router.get('/:userId',
     // El cliente tiene constantemente mandarnos el token que se le dio
     // para ser validado 
     authenticateJwt,
@@ -19,8 +19,8 @@ router.get('/:idUser',
     async (req, res, next) => {
         //se tienen que aplicar los try catch en cada tipo de peticion para que el middleware lo pueda detectar
         try {
-            const { idUser } = req.params;
-            const todos = await serviceTodos.findByUser(idUser);
+            const { userId } = req.params;
+            const todos = await serviceTodos.findByUser(userId);
             res.json(todos);
         } catch (error) {
             next(error);
@@ -38,7 +38,7 @@ router.post('/',
     async (req, res, next) => {
         try {
             const body = req.body;
-            const todos = await serviceTodos.create(body);
+            const todos = await serviceTodos.createAndUpdate(body);
             res.json({
                 message: 'created',
                 data: body
@@ -48,43 +48,5 @@ router.post('/',
         }
     }
 )
-
-router.patch('/',
-    authenticateJwt,
-    checkRoles(['admin', 'user']),
-    //el validatorHandler es el middleware que valida el eschema vs el body
-    validatorHandler(updateTodoSchema, 'body'),
-    async (req, res, next) => {
-      try {
-        const body = req.body;
-       const todos = await serviceTodos.update(body);
-        res.json({
-          message: 'updated',
-          data: body
-        });
-      } catch (error) {
-        next(error);
-      }
-    }
-  )
-
-router.delete('/',
-    authenticateJwt,
-    checkRoles(['admin','user']),
-    validatorHandler(deleteTodoSchema, 'body'),
-    async (req, res, next) => {
-      try {
-        const body = req.body;
-        const deteTodos = await serviceTodos.delete(body);
-        console.log(deteTodos);
-        res.json({
-          message: 'delete',
-          data: body
-        });
-      } catch (error) {
-        next(error);
-      }
-    }
-  )
 
 module.exports = router;

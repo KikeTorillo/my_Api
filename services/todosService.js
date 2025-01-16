@@ -1,7 +1,6 @@
 // Este es el servicio que gestiona la data de los usuarios
 const pool = require('../libs/postgresPool');
 const boom = require('@hapi/boom');
-const { updateTable } = require('../utils/sql/updateAbtraction');
 
 class TodosService {
 
@@ -12,31 +11,26 @@ class TodosService {
   }
 
   async findByUser(id) {
-    const todo = await this.pool.query(`select * from to_dos where id_user='${id}';`);
-    if (!todo) {
-      throw boom.notFound('user not found');
+    const todo = await this.pool.query(`select * from to_dos where user_id='${id}';`);
+    if (todo.rows.length === 0) {
+      return todo.rows;
     }
-    return todo.rows;
+    return todo.rows[0].to_do;
   }
 
-  async create(body) {
-    const query = `INSERT INTO public.to_dos(id_user, to_do, done) VALUES (${body.idUser}, '${body.todo}', false);`;
+  async createAndUpdate(body) {
+    const todo = await this.pool.query(`select * from to_dos where user_id='${body.userId}';`);
+    const bodyStringify = JSON.stringify(body.toDo);
+    console.log(bodyStringify);
+    let query;
+    if (todo.rows.length === 0) {
+      query = `INSERT INTO public.to_dos(user_id, to_do) VALUES (${body.userId}, '${bodyStringify}');`;
+    }else{
+      query = `UPDATE public.to_dos SET to_do='${bodyStringify}' WHERE user_id=${body.userId};`;
+    }
     const rta = await this.pool.query(query);
     return rta.rows;
   }
-
-  async update(body) {
-    const query = `UPDATE public.to_dos SET done=${body.done} WHERE id_user=${body.idUser} and id=${body.id};`;
-    const rta = await this.pool.query(query);
-    return rta.rows;
-  }
-
-  async delete(body) {
-    const query = `DELETE FROM public.to_dos WHERE id_user=${body.idUser} and id=${body.id};`;
-    const rta = await this.pool.query(query);
-    return rta.rows;
-  }
-
 
 }
 
