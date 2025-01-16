@@ -24,7 +24,7 @@ router.post('/login',
       .cookie('access_token', token.token, { 
         httpOnly: true, // la cookie solo se puede acceder en el servidor
         secure: config.isProd ? true : false, // solo se envia por https importante poner true en produccion
-        sameSite: 'None', // solo se envia si es el mismo dominio
+        sameSite: 'lax', // solo se envia si es el mismo dominio
       })
       .json(token.payload);
     } catch (error) {

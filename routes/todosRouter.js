@@ -4,7 +4,7 @@ const router = express.Router();
 const TodosService = require('../services/todosService');
 const serviceTodos = new TodosService();
 const { validatorHandler } = require('./../middleware/validatorHandler');
-const { getTodoSchema, createTodoSchema, deleteTodoSchema } = require('./../schemas/toDosSchemas');
+const { getTodoSchema, createUpdateDeleteTodoSchema } = require('./../schemas/toDosSchemas');
 const { authenticateJwt, checkRoles } = require('./../middleware/authHandler');
 
 
@@ -34,11 +34,11 @@ router.post('/',
     authenticateJwt,
     checkRoles(['admin', 'user']),
     //el validatorHandler es el middleware que valida el eschema vs el body
-    validatorHandler(createTodoSchema, 'body'),
+    validatorHandler(createUpdateDeleteTodoSchema, 'body'),
     async (req, res, next) => {
         try {
             const body = req.body;
-            const todos = await serviceTodos.createAndUpdate(body);
+            const todos = await serviceTodos.createUpdateDelete(body);
             res.json({
                 message: 'created',
                 data: body

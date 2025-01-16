@@ -1,5 +1,4 @@
 // se requieren la rutas que se utilizaran
-const productsRouter = require('./productsRouter');
 const usersRouter = require('./usersRouter');
 const authRouter = require('./authRouter');
 const todosRouter = require('./todosRouter');
@@ -17,7 +16,6 @@ function routerApi(app){
   router.use('/auth', authRouter);
   router.use('/users', usersRouter);
   router.use('/todos', todosRouter);
-  router.use('/products', productsRouter);
 }
 
 //Se exporta el ruteo de la api

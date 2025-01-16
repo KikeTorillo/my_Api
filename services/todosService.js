@@ -18,7 +18,7 @@ class TodosService {
     return todo.rows[0].to_do;
   }
 
-  async createAndUpdate(body) {
+  async createUpdateDelete(body) {
     const todo = await this.pool.query(`select * from to_dos where user_id='${body.userId}';`);
     const bodyStringify = JSON.stringify(body.toDo);
     console.log(bodyStringify);

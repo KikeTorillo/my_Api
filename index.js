@@ -3,7 +3,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const app = express();
 const routerApi = require('./routes');
-const port = 3000;
 const { checkApiKey } = require('./middleware/authHandler')
 const {logErrors, errorHandler,boomErrorHandler} = require('./middleware/errorHandler');
 
@@ -17,10 +16,11 @@ app.use(cookieParser());
 const whiteList = ['http://localhost:5173','http://localhost:3000','https://suite-apps-front-orpin.vercel.app','https://my-api-eta-orcin.vercel.app'];
 const options = {
   origin: (origin, callback)=>{
+    console.log(origin);
     if (whiteList.includes(origin)) {
       callback(null,true);
     }else{
-      callback(new Error('muesto error de cors'));
+      callback(new Error('Error cors origen no permitido'));
     }
   },
   credentials: true
