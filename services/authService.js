@@ -43,7 +43,6 @@ class AuthService {
         }
         const payload = { sub: user.id };
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15min' });
-        console.log(token);
         const link = `${config.urlFront}/resetpass?token=${token}`
         service.update(user.id, { recovery_token: token });
         const mail = {
@@ -59,11 +58,7 @@ class AuthService {
     async changePassword(token, newPassword) {
         const payload = jwt.verify(token, config.jwtSecret);
         const user = await service.findOne(payload.sub);
-        console.log('entro',user);
-            console.log('token', token);
         if (user.recovery_token !== token) {
-            console.log('entro',user);
-            console.log('token', token);
             throw boom.unauthorized();
         }
         const hash = await bcrypt.hash(newPassword, 10);

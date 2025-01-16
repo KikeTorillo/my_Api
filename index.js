@@ -16,7 +16,7 @@ app.use(cookieParser());
 const whiteList = ['http://localhost:5173','http://localhost:3000','https://suite-apps-front-orpin.vercel.app','https://my-api-eta-orcin.vercel.app'];
 const options = {
   origin: (origin, callback)=>{
-    console.log(origin);
+    //console.log(origin);
     if (whiteList.includes(origin)) {
       callback(null,true);
     }else{

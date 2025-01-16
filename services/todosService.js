@@ -21,7 +21,6 @@ class TodosService {
   async createUpdateDelete(body) {
     const todo = await this.pool.query(`select * from to_dos where user_id='${body.userId}';`);
     const bodyStringify = JSON.stringify(body.toDo);
-    console.log(bodyStringify);
     let query;
     if (todo.rows.length === 0) {
       query = `INSERT INTO public.to_dos(user_id, to_do) VALUES (${body.userId}, '${bodyStringify}');`;
