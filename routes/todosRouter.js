@@ -4,7 +4,7 @@ const router = express.Router();
 const TodosService = require('../services/todosService');
 const serviceTodos = new TodosService();
 const { validatorHandler } = require('./../middleware/validatorHandler');
-const { getTodoSchema, createUpdateDeleteTodoSchema } = require('./../schemas/toDosSchemas');
+const { getTodoSchema, createTodoSchema, updateTodoSchema, updateOrderTodoSchema } = require('./../schemas/toDosSchemas');
 const { authenticateJwt, checkRoles } = require('./../middleware/authHandler');
 
 
@@ -34,13 +34,71 @@ router.post('/',
     authenticateJwt,
     checkRoles(['admin', 'user']),
     //el validatorHandler es el middleware que valida el eschema vs el body
-    validatorHandler(createUpdateDeleteTodoSchema, 'body'),
+    validatorHandler(createTodoSchema, 'body'),
     async (req, res, next) => {
         try {
+            const userId = req.user.sub;
             const body = req.body;
-            const todos = await serviceTodos.createUpdateDelete(body);
+            const toDos = await serviceTodos.createTodo(userId, body);
             res.json({
                 message: 'created',
+                data: body
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+)
+
+router.patch('/',
+    authenticateJwt,
+    checkRoles(['admin', 'user']),
+    validatorHandler(updateTodoSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const userId = req.user.sub;
+            const body = req.body;
+            const toDos = await serviceTodos.updateTodo(userId, body);
+            res.json({
+                message: 'updated',
+                data: body
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+)
+
+router.put('/',
+    authenticateJwt,
+    checkRoles(['admin', 'user']),
+    validatorHandler(updateOrderTodoSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const userId = req.user.sub;
+            const body = req.body;
+            const toDos = await serviceTodos.updateOrderTodo(userId, body);
+            res.json({
+                message: 'updated',
+                data: body
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+)
+
+router.delete('/',
+    authenticateJwt,
+    checkRoles(['admin', 'user']),
+    validatorHandler(updateTodoSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const userId = req.user.sub;
+            const body = req.body;
+            const toDos = await serviceTodos.deleteTodo(userId, body);
+            res.json({
+                message: 'deleted',
                 data: body
             });
         } catch (error) {
